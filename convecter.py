@@ -1,0 +1,118 @@
+import argparse
+import sys
+import math
+
+
+def celsius_to_kelvin(value):
+    if value < -273.15:
+        raise ValueError("Температура ниже абсолютного нуля")
+
+    return value + 273.15
+
+def kelvin_to_celsius(value):
+    if value < 0:
+        raise ValueError("Температура ниже абсолютного нуля")
+
+    return value - 273.15
+
+def fahrenheit_to_kelvin(value):
+    if value < -459.67:
+        raise ValueError("Температура ниже абсолютного нуля")
+
+    return (value + 459.67) * 5 / 9
+
+def kelvin_to_fahrenheit(value):
+    if value < 0:
+        raise ValueError("Температура ниже абсолютного нуля")
+
+    return value * 9 / 5 - 459.67
+
+
+def convert_units(value, from_unit, to_unit):
+    if not math.isfinite(value):
+        raise ValueError("Введите конечное число")
+    from_unit = from_unit.lower()
+    to_unit = to_unit.lower()
+
+    groups = {
+        "mm": "length",
+        "cm": "length",
+        "m": "length",
+        "km": "length",
+        "g": "mass",
+        "kg": "mass",
+        "c": "temperature",
+        "f": "temperature",
+        "k": "temperature",
+    }
+
+    if from_unit not in groups:
+        raise ValueError("Неизвестная исходная единица")
+
+    if to_unit not in groups:
+        raise ValueError("Неизвестная конечная единица")
+
+    if groups[from_unit] != groups[to_unit]:
+        raise ValueError("Нельзя переводить между разными группами величин")
+
+    if from_unit == "c" and to_unit == "k":
+        return celsius_to_kelvin(value)
+
+    if from_unit == "k" and to_unit == "c":
+        return kelvin_to_celsius(value)
+
+    if from_unit == "f" and to_unit == "k":
+        return fahrenheit_to_kelvin(value)
+
+    if from_unit == "k" and to_unit == "f":
+        return kelvin_to_fahrenheit(value)
+
+    if from_unit == "c" and to_unit == "f":
+        kelvin = celsius_to_kelvin(value)
+        return kelvin_to_fahrenheit(kelvin)
+
+    if from_unit == "f" and to_unit == "c":
+        kelvin = fahrenheit_to_kelvin(value)
+        return kelvin_to_celsius(kelvin)
+
+    if from_unit == "c" and to_unit == "c":
+        celsius_to_kelvin(value)
+        return float(value)
+
+    if from_unit == "f" and to_unit == "f":
+        fahrenheit_to_kelvin(value)
+        return float(value)
+
+    if from_unit == "k" and to_unit == "k":
+        if value < 0:
+            raise ValueError("Температура ниже абсолютного нуля")
+        return float(value)
+            
+    factors = {
+        "mm": 0.001,
+        "cm": 0.01,
+        "m": 1,
+        "km": 1000,
+        "g": 0.001,
+        "kg": 1,
+    }
+    
+    base_value = value * factors[from_unit]
+    result = base_value / factors[to_unit]
+
+    return result
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("value", type=float)
+parser.add_argument("--from", dest="from_unit", required=True)
+parser.add_argument("--to", dest="to_unit", required=True)
+
+args = parser.parse_args()
+
+try:
+    result = convert_units(args.value, args.from_unit, args.to_unit)
+    print(result)
+except ValueError as error:
+    print("Ошибка:", error, file=sys.stderr)
+    sys.exit(2)
