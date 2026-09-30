@@ -1,7 +1,3 @@
-import argparse
-import sys
-
-
 def split_expression(expression):
     elements = []
     number = ""
@@ -64,17 +60,83 @@ def validate_expression(elements):
         raise ValueError("В конце выражения пропущено число")
 
 
-parser = argparse.ArgumentParser(
-    description="Разбор и проверка арифметического выражения"
-)
-parser.add_argument("expression", help="Выражение в кавычках")
+def calculate_multiply_divide(prepared):
+    result = [prepared[0]]
+    index = 1
 
-args = parser.parse_args()
+    while index < len(prepared):
+        operator = prepared[index]
+        number = prepared[index + 1]
 
-try:
-    elements = split_expression(args.expression)
+        if operator == "*":
+            result[-1] = result[-1] * number
+
+        elif operator == "/":
+            if number == 0:
+                raise ValueError("Деление на ноль")
+
+            result[-1] = result[-1] / number
+
+        else:
+            result.append(operator)
+            result.append(number)
+
+        index = index + 2
+
+    return result
+
+
+def calculate_add_subtract(elements):
+    result = elements[0]
+    index = 1
+
+    while index < len(elements):
+        operator = elements[index]
+        number = elements[index + 1]
+
+        if operator == "+":
+            result = result + number
+        elif operator == "-":
+            result = result - number
+
+        index = index + 2
+
+    return result
+
+
+def prepare_numbers(elements):
+    prepared = []
+    expect_number = True
+    sign = 1
+
+    for element in elements:
+        if expect_number:
+            if element == "+":
+                continue
+
+            if element == "-":
+                sign = -sign
+                continue
+
+            number = float(element) * sign
+            prepared.append(number)
+
+            sign = 1
+            expect_number = False
+
+        else:
+            prepared.append(element)
+            expect_number = True
+
+    return prepared
+
+
+
+def evaluate(expression):
+    elements = split_expression(expression)
     validate_expression(elements)
-    print(elements)
-except ValueError as error:
-    print("Ошибка:", error, file=sys.stderr)
-    sys.exit(2)
+
+    prepared = prepare_numbers(elements)
+    after_multiply = calculate_multiply_divide(prepared)
+
+    return calculate_add_subtract(after_multiply)

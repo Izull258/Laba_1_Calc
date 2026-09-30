@@ -1,5 +1,3 @@
-import argparse
-import sys
 import math
 
 
@@ -101,18 +99,3 @@ def convert_units(value, from_unit, to_unit):
     result = base_value / factors[to_unit]
 
     return result
-
-
-parser = argparse.ArgumentParser()
-parser.add_argument("value", type=float)
-parser.add_argument("--from", dest="from_unit", required=True)
-parser.add_argument("--to", dest="to_unit", required=True)
-
-args = parser.parse_args()
-
-try:
-    result = convert_units(args.value, args.from_unit, args.to_unit)
-    print(result)
-except ValueError as error:
-    print("Ошибка:", error, file=sys.stderr)
-    sys.exit(2)
