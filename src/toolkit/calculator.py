@@ -1,18 +1,22 @@
+from toolkit.errors import CalculatorError
+
+
 def split_expression(expression):
+    """Разбивает строку на числа и знаки"""
     elements = []
     number = ""
 
     for char in expression:
         if char in "0123456789.":
             if char == "." and "." in number:
-                raise ValueError("В числе не может быть двух точек")
+                raise CalculatorError("В числе не может быть двух точек")
 
             number = number + char
             continue
 
         if number != "":
             if number == ".":
-                raise ValueError("Точка без цифр не является числом")
+                raise CalculatorError("Точка без цифр не является числом")
 
             elements.append(number)
             number = ""
@@ -23,11 +27,11 @@ def split_expression(expression):
         if char in "+-*/":
             elements.append(char)
         else:
-            raise ValueError("Недопустимый символ: " + char)
+            raise CalculatorError("Недопустимый символ: " + char)
 
     if number != "":
         if number == ".":
-            raise ValueError("Точка без цифр не является числом")
+            raise CalculatorError("Точка без цифр не является числом")
 
         elements.append(number)
 
@@ -35,8 +39,9 @@ def split_expression(expression):
 
 
 def validate_expression(elements):
+    """Проверяет порядок чисел и знаков в выражении"""
     if not elements:
-        raise ValueError("Пустое выражение")
+        raise CalculatorError("Пустое выражение")
 
     expect_number = True
 
@@ -46,21 +51,22 @@ def validate_expression(elements):
                 continue
 
             if element in ("*", "/"):
-                raise ValueError("Ожидалось число")
+                raise CalculatorError("Ожидалось число")
 
             expect_number = False
 
         else:
             if element not in ("+", "-", "*", "/"):
-                raise ValueError("Между числами пропущена операция")
+                raise CalculatorError("Между числами пропущена операция")
 
             expect_number = True
 
     if expect_number:
-        raise ValueError("В конце выражения пропущено число")
+        raise CalculatorError("В конце выражения пропущено число")
 
 
 def calculate_multiply_divide(prepared):
+    """Выполняет умножение и деление"""
     result = [prepared[0]]
     index = 1
 
@@ -73,7 +79,7 @@ def calculate_multiply_divide(prepared):
 
         elif operator == "/":
             if number == 0:
-                raise ValueError("Деление на ноль")
+                raise CalculatorError("Деление на ноль")
 
             result[-1] = result[-1] / number
 
@@ -87,6 +93,7 @@ def calculate_multiply_divide(prepared):
 
 
 def calculate_add_subtract(elements):
+    """Выполняет оставшиеся сложение и вычитание"""
     result = elements[0]
     index = 1
 
@@ -105,6 +112,7 @@ def calculate_add_subtract(elements):
 
 
 def prepare_numbers(elements):
+    """Преобразует строки чисел в числа с учетом знаков"""
     prepared = []
     expect_number = True
     sign = 1
@@ -133,6 +141,7 @@ def prepare_numbers(elements):
 
 
 def evaluate(expression):
+    """Проверяет арифметическое выражение и возвращает результат"""
     elements = split_expression(expression)
     validate_expression(elements)
 

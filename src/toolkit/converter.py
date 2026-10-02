@@ -1,34 +1,41 @@
 import math
 
+from toolkit.errors import ConversionError
+
 
 def celsius_to_kelvin(value):
+    """Проверяет абсолютный ноль и переводит градусы Цельсия в кельвины"""
     if value < -273.15:
-        raise ValueError("Температура ниже абсолютного нуля")
+        raise ConversionError("Температура ниже абсолютного нуля")
 
     return value + 273.15
 
 def kelvin_to_celsius(value):
+    """Проверяет абсолютный ноль и переводит кельвины в градусы Цельсия"""
     if value < 0:
-        raise ValueError("Температура ниже абсолютного нуля")
+        raise ConversionError("Температура ниже абсолютного нуля")
 
     return value - 273.15
 
 def fahrenheit_to_kelvin(value):
+    """Проверяет абсолютный ноль и переводит градусы Фаренгейта в кельвины"""
     if value < -459.67:
-        raise ValueError("Температура ниже абсолютного нуля")
+        raise ConversionError("Температура ниже абсолютного нуля")
 
     return (value + 459.67) * 5 / 9
 
 def kelvin_to_fahrenheit(value):
+    """Проверяет абсолютный ноль и переводит кельвины в градусы Фаренгейта"""
     if value < 0:
-        raise ValueError("Температура ниже абсолютного нуля")
+        raise ConversionError("Температура ниже абсолютного нуля")
 
     return value * 9 / 5 - 459.67
 
 
 def convert_units(value, from_unit, to_unit):
+    """Проверяет число и единицы, затем переводит длину, массу или температуру"""
     if not math.isfinite(value):
-        raise ValueError("Введите конечное число")
+        raise ConversionError("Введите конечное число")
     from_unit = from_unit.lower()
     to_unit = to_unit.lower()
 
@@ -45,13 +52,13 @@ def convert_units(value, from_unit, to_unit):
     }
 
     if from_unit not in groups:
-        raise ValueError("Неизвестная исходная единица")
+        raise ConversionError("Неизвестная исходная единица")
 
     if to_unit not in groups:
-        raise ValueError("Неизвестная конечная единица")
+        raise ConversionError("Неизвестная конечная единица")
 
     if groups[from_unit] != groups[to_unit]:
-        raise ValueError("Нельзя переводить между разными группами величин")
+        raise ConversionError("Нельзя переводить между разными группами величин")
 
     if from_unit == "c" and to_unit == "k":
         return celsius_to_kelvin(value)
@@ -83,7 +90,7 @@ def convert_units(value, from_unit, to_unit):
 
     if from_unit == "k" and to_unit == "k":
         if value < 0:
-            raise ValueError("Температура ниже абсолютного нуля")
+            raise ConversionError("Температура ниже абсолютного нуля")
         return float(value)
             
     factors = {
