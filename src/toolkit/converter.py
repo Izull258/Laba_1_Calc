@@ -3,28 +3,28 @@ import math
 from toolkit.errors import ConversionError
 
 
-def celsius_to_kelvin(value):
+def celsius_to_kelvin(value: float) -> float:
     """Проверяет абсолютный ноль и переводит градусы Цельсия в кельвины"""
     if value < -273.15:
         raise ConversionError("Температура ниже абсолютного нуля")
 
     return value + 273.15
 
-def kelvin_to_celsius(value):
+def kelvin_to_celsius(value: float) -> float:
     """Проверяет абсолютный ноль и переводит кельвины в градусы Цельсия"""
     if value < 0:
         raise ConversionError("Температура ниже абсолютного нуля")
 
     return value - 273.15
 
-def fahrenheit_to_kelvin(value):
+def fahrenheit_to_kelvin(value: float) -> float:
     """Проверяет абсолютный ноль и переводит градусы Фаренгейта в кельвины"""
     if value < -459.67:
         raise ConversionError("Температура ниже абсолютного нуля")
 
     return (value + 459.67) * 5 / 9
 
-def kelvin_to_fahrenheit(value):
+def kelvin_to_fahrenheit(value: float) -> float:
     """Проверяет абсолютный ноль и переводит кельвины в градусы Фаренгейта"""
     if value < 0:
         raise ConversionError("Температура ниже абсолютного нуля")
@@ -32,7 +32,7 @@ def kelvin_to_fahrenheit(value):
     return value * 9 / 5 - 459.67
 
 
-def convert_units(value, from_unit, to_unit):
+def convert_units(value: float, from_unit: str, to_unit: str) -> float:
     """Проверяет число и единицы, затем переводит длину, массу или температуру"""
     if not math.isfinite(value):
         raise ConversionError("Введите конечное число")

@@ -1,7 +1,7 @@
 from toolkit.errors import CalculatorError
 
 
-def split_expression(expression):
+def split_expression(expression: str) -> list[str]:
     """Разбивает строку на числа и знаки"""
     elements = []
     number = ""
@@ -38,7 +38,7 @@ def split_expression(expression):
     return elements
 
 
-def validate_expression(elements):
+def validate_expression(elements: list[str]) -> None:
     """Проверяет порядок чисел и знаков в выражении"""
     if not elements:
         raise CalculatorError("Пустое выражение")
@@ -65,7 +65,7 @@ def validate_expression(elements):
         raise CalculatorError("В конце выражения пропущено число")
 
 
-def calculate_multiply_divide(prepared):
+def calculate_multiply_divide(prepared: list[float | str]) -> list[float | str]:
     """Выполняет умножение и деление"""
     result = [prepared[0]]
     index = 1
@@ -92,7 +92,7 @@ def calculate_multiply_divide(prepared):
     return result
 
 
-def calculate_add_subtract(elements):
+def calculate_add_subtract(elements: list[float | str]) -> float:
     """Выполняет оставшиеся сложение и вычитание"""
     result = elements[0]
     index = 1
@@ -111,7 +111,7 @@ def calculate_add_subtract(elements):
     return result
 
 
-def prepare_numbers(elements):
+def prepare_numbers(elements: list[str]) -> list[float | str]:
     """Преобразует строки чисел в числа с учетом знаков"""
     prepared = []
     expect_number = True
@@ -140,7 +140,7 @@ def prepare_numbers(elements):
 
 
 
-def evaluate(expression):
+def evaluate(expression: str) -> float:
     """Проверяет арифметическое выражение и возвращает результат"""
     elements = split_expression(expression)
     validate_expression(elements)

@@ -4,7 +4,6 @@ import sys
 from toolkit.calculator import evaluate
 from toolkit.converter import convert_units
 
-
 parser = argparse.ArgumentParser(
     description="Калькулятор и конвертер величин"
 )
